@@ -83,7 +83,7 @@
 </div>
 
 <script>
-const API='http://localhost:5000';
+const API='https://verdant-api-310g.onrender.com';
 function getCart(){return JSON.parse(localStorage.getItem('tm_cart')||'[]');}
 function saveCart(c){localStorage.setItem('tm_cart',JSON.stringify(c));}
 function removeItem(idx){const cart=getCart();cart.splice(idx,1);saveCart(cart);render();}
