@@ -53,36 +53,6 @@
   .chart-h{position:relative;height:220px;}
 
   @media(max-width:900px){.main{grid-template-columns:1fr;}}
-
-/* ===== MOBILE / RESPONSIVE POLISH ===== */
-html { overflow-x: hidden; }
-body { overflow-x: hidden; }
-img { max-width: 100%; }
-button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
-
-@media (max-width: 900px) {
-  nav { height:auto; min-height:64px; padding:10px 16px; flex-wrap:wrap; }
-  .nav-right { width:100%; margin-left:0; justify-content:space-between; }
-  .back-btn,.cart-btn { font-size:12px; padding:8px 10px; }
-  .seller-banner { padding:28px 18px; grid-template-columns:1fr; gap:16px; text-align:center; }
-  .seller-avatar { width:72px;height:72px;font-size:30px;margin:0 auto; }
-  .seller-banner-name { font-size:25px; }
-  .seller-meta,.seller-stat-pills { justify-content:center; gap:8px; }
-  .seller-stat-pills .stat-pill { flex:1 1 calc(50% - 8px); min-width:120px; }
-  .seller-help { padding:11px 16px; }
-  .main { padding:22px 16px; grid-template-columns:1fr; gap:18px; }
-  .listing-card { padding:13px; }
-  .listing-trust { min-width:58px; }
-  .chart-box { padding:16px; }
-  .chart-h { height:260px; }
-}
-@media (max-width:520px) {
-  .nav-brand { font-size:20px; }
-  .listing-card { display:grid; grid-template-columns:56px 1fr; align-items:center; }
-  .listing-trust { grid-column:1/-1; margin-left:0; text-align:left; display:flex; align-items:center; gap:10px; }
-  .mini-label { margin-top:0; }
-}
-
 </style>
 </head>
 <body>
@@ -148,26 +118,14 @@ async function load(){
     if(!seenNames.has(key)||p.product_id<seenNames.get(key).product_id)seenNames.set(key,p);
   });
   const uniqueProducts=[...seenNames.values()].sort((a,b)=>a.product_id-b.product_id);
- 
-  const results = await Promise.all(
-  uniqueProducts.map(async (p) => {
-    try {
-      const response = await fetch(`${API}/trust-data/${p.product_id}`);
-
-      if (!response.ok) return null;
-
-      const td = await response.json();
-      const entry = td.sellers?.find(s => s.seller_id === sellerId);
-
-      return entry ? { product: p, entry } : null;
-    } catch (e) {
-      return null;
-    }
-  })
-);
-
-const listingItems = results.filter(Boolean);
-
+  const listingItems=[];
+  for(const p of uniqueProducts){
+    try{
+      const td=await fetch(`${API}/trust-data/${p.product_id}`).then(r=>r.json());
+      const entry=td.sellers?.find(s=>s.seller_id===sellerId);
+      if(entry)listingItems.push({product:p,entry});
+    } catch(e){}
+  }
   if(!listingItems.length){document.getElementById('listingsEl').innerHTML='<div style="color:var(--muted)">No listings found.</div>';return;}
   const riskColors={low:'var(--low)',medium:'var(--med)',high:'var(--high)'};
   const EMOJI_MAP={'Electronics':'💻','Footwear':'👟','Home Appliances':'🏠','Accessories':'🖱️','Books':'📚','Sports':'⚽','Beauty':'✨','Kitchen':'🍳'};
