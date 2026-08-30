@@ -148,14 +148,26 @@ async function load(){
     if(!seenNames.has(key)||p.product_id<seenNames.get(key).product_id)seenNames.set(key,p);
   });
   const uniqueProducts=[...seenNames.values()].sort((a,b)=>a.product_id-b.product_id);
-  const listingItems=[];
-  for(const p of uniqueProducts){
-    try{
-      const td=await fetch(`${API}/trust-data/${p.product_id}`).then(r=>r.json());
-      const entry=td.sellers?.find(s=>s.seller_id===sellerId);
-      if(entry)listingItems.push({product:p,entry});
-    } catch(e){}
-  }
+ 
+  const results = await Promise.all(
+  uniqueProducts.map(async (p) => {
+    try {
+      const response = await fetch(`${API}/trust-data/${p.product_id}`);
+
+      if (!response.ok) return null;
+
+      const td = await response.json();
+      const entry = td.sellers?.find(s => s.seller_id === sellerId);
+
+      return entry ? { product: p, entry } : null;
+    } catch (e) {
+      return null;
+    }
+  })
+);
+
+const listingItems = results.filter(Boolean);
+
   if(!listingItems.length){document.getElementById('listingsEl').innerHTML='<div style="color:var(--muted)">No listings found.</div>';return;}
   const riskColors={low:'var(--low)',medium:'var(--med)',high:'var(--high)'};
   const EMOJI_MAP={'Electronics':'💻','Footwear':'👟','Home Appliances':'🏠','Accessories':'🖱️','Books':'📚','Sports':'⚽','Beauty':'✨','Kitchen':'🍳'};
