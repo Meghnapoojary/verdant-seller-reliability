@@ -61,6 +61,35 @@
   .modal p{color:var(--muted);font-size:15px;margin-bottom:20px;line-height:1.6;}
   .modal-order-id{background:var(--warm2);border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent);margin-bottom:22px;}
   .modal-btn{background:linear-gradient(135deg,var(--accent),var(--clay));border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(193,127,62,.3);}
+
+/* ===== MOBILE / RESPONSIVE POLISH ===== */
+html { overflow-x: hidden; }
+body { overflow-x: hidden; }
+img { max-width: 100%; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+
+@media (max-width: 900px) {
+  nav { height:auto; min-height:64px; padding:10px 16px; flex-wrap:wrap; }
+  .back-btn { margin-left:auto; font-size:12px; padding:8px 10px; }
+  .page { grid-template-columns:1fr; padding:24px 16px; gap:18px; }
+  .cart-item { grid-template-columns:64px 1fr; gap:12px; padding:14px; }
+  .item-img,.item-img-placeholder { width:64px;height:64px; }
+  .cart-item > div:last-child { grid-column:1/-1; flex-direction:row !important; justify-content:space-between; align-items:center; width:100%; }
+  .order-summary { position:static; top:auto; padding:20px; }
+  .checkout-btn { min-height:46px; }
+}
+@media (max-width:520px) {
+  .nav-brand { font-size:20px; }
+  .page { padding:18px 12px; }
+  .page-title { font-size:23px; }
+  .cart-item { grid-template-columns:56px 1fr; padding:12px; }
+  .item-img,.item-img-placeholder { width:56px;height:56px; }
+  .item-name { font-size:14px; }
+  .item-trust { flex-wrap:wrap; }
+  .order-summary { padding:16px; }
+  .summary-row { font-size:13px; }
+}
+
 </style>
 </head>
 <body>
@@ -83,7 +112,7 @@
 </div>
 
 <script>
-const API='https://verdant-api-310g.onrender.com';
+const API='http://localhost:5000';
 function getCart(){return JSON.parse(localStorage.getItem('tm_cart')||'[]');}
 function saveCart(c){localStorage.setItem('tm_cart',JSON.stringify(c));}
 function removeItem(idx){const cart=getCart();cart.splice(idx,1);saveCart(cart);render();}
