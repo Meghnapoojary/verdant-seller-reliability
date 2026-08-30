@@ -23,9 +23,11 @@ DB_CONFIG = {
     "database": os.getenv("DB_NAME", "seller_trust_db"),
 }
 
-if os.getenv("DB_SSL_CA"):
+DB_SSL_CA = os.getenv("DB_SSL_CA", "")
+
+if DB_SSL_CA:
     DB_CONFIG["ssl"] = {
-        "ca": os.getenv("DB_SSL_CA")
+        "ca": DB_SSL_CA
     }
 
 def get_db():
