@@ -392,9 +392,9 @@ REVIEWS:
     }
     try:
         response = client.models.generate_content(
-            model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
+            model=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
             contents=prompt,
-            config={"response_mime_type":"application/json","response_schema":schema,"temperature":0.15}
+            config={"response_mime_type":"application/json","response_schema":schema}
         )
         result = response.parsed if getattr(response, "parsed", None) else __import__("json").loads(response.text)
         result["confidence"] = max(0, min(100, int(result.get("confidence", 0))))
