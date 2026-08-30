@@ -1,0 +1,8 @@
+Replace the five files in your existing TrustMart repository's frontend folder with these updated files.
+Then from the repository root run:
+
+git add frontend
+git commit -m "Improve mobile responsive UI"
+git push
+
+Render will redeploy the static site from main.
