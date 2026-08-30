@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Verdant — Product</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#f5f0e8;--surface:#faf7f2;--card:#fff9f0;--card2:#f0e8dc;--accent:#c17f3e;--accent2:#7c9e6b;--clay:#d4956a;--text:#2c2416;--muted:#8a7a65;--border:#e2d8cc;--low:#7c9e6b;--med:#c17f3e;--high:#b85c4a;--warm1:#e8ddd0;--warm2:#f0e8dc;--gold:#c17f3e;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);}
+
+  nav{position:sticky;top:0;z-index:100;background:rgba(245,240,232,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:64px;box-shadow:0 1px 0 var(--border);}
+  .nav-brand{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;text-decoration:none;color:var(--accent);display:flex;align-items:center;gap:8px;letter-spacing:-.3px;}
+  .nav-brand .icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--clay));border-radius:9px;display:grid;place-items:center;font-size:17px;box-shadow:0 2px 8px rgba(193,127,62,.3);}
+  .nav-right{display:flex;align-items:center;gap:12px;margin-left:auto;}
+  .back-btn{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:8px 16px;font-size:14px;cursor:pointer;color:var(--text);text-decoration:none;transition:border-color .2s;font-weight:600;}
+  .back-btn:hover{border-color:var(--accent);}
+  .cart-btn{position:relative;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:8px 16px;font-size:14px;cursor:pointer;color:var(--text);display:flex;align-items:center;gap:8px;text-decoration:none;transition:border-color .2s;font-weight:600;}
+  .cart-btn:hover{border-color:var(--accent);}
+  .cart-count{background:var(--accent);color:#fff;border-radius:50%;width:18px;height:18px;display:grid;place-items:center;font-size:11px;font-weight:700;}
+
+  .product-hero{display:grid;grid-template-columns:380px 1fr;gap:0;min-height:340px;border-bottom:1px solid var(--border);}
+  .product-img-col{background:linear-gradient(145deg,var(--warm1),var(--warm2));border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden;}
+  .product-img-col::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(193,127,62,.06) 0%,transparent 70%);}
+  .product-img{max-width:260px;max-height:260px;object-fit:contain;position:relative;z-index:1;border-radius:12px;}
+  .product-info-col{padding:36px 44px;display:flex;flex-direction:column;justify-content:center;background:var(--surface);}
+  .product-category{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);font-weight:700;margin-bottom:8px;}
+  .product-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;line-height:1.2;margin-bottom:12px;color:var(--text);}
+  .product-desc{color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:20px;max-width:500px;}
+
+  /* Price display showing a meaningful range */
+  .price-block{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .price-main{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--accent);}
+  .price-main-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+  .price-divider{width:1px;height:40px;background:var(--border);}
+  .price-range-info{font-size:13px;color:var(--muted);}
+  .price-range-info strong{color:var(--text);}
+  .price-note{font-size:11px;color:var(--med);font-weight:600;background:rgba(193,127,62,.08);border:1px solid rgba(193,127,62,.2);border-radius:6px;padding:3px 8px;margin-top:4px;display:inline-block;}
+
+  .seller-summary{display:flex;gap:14px;flex-wrap:wrap;}
+  .summary-chip{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:11px 16px;display:flex;flex-direction:column;gap:4px;}
+  .chip-val{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--text);}
+  .chip-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700;}
+
+  .main{padding:32px 32px;}
+  .section-hdr{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px;color:var(--text);}
+  .help-box{background:linear-gradient(135deg,rgba(124,158,107,.07),rgba(193,127,62,.05));border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:13px;color:var(--muted);line-height:1.7;}
+  .help-box strong{color:var(--text);}
+  .help-box .help-title{font-weight:700;color:var(--text);font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+
+  .trust-filter{display:flex;align-items:center;gap:12px;margin-bottom:20px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;width:fit-content;}
+  .toggle-label{font-size:14px;color:var(--text);font-weight:600;}
+  .toggle-sub{font-size:12px;color:var(--muted);}
+  .toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+  .toggle input{opacity:0;width:0;height:0;}
+  .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.3s;}
+  .toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;}
+  .toggle input:checked+.toggle-slider{background:var(--low);}
+  .toggle input:checked+.toggle-slider:before{transform:translateX(20px);}
+
+  .sellers-list{display:flex;flex-direction:column;gap:14px;}
+  .seller-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:20px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:start;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden;}
+  .seller-card:hover{border-color:var(--accent);box-shadow:0 6px 24px rgba(193,127,62,.1);}
+  .seller-card.best{border-color:var(--low);box-shadow:0 0 0 1px rgba(124,158,107,.25);}
+  .seller-card.best::before{content:'TOP PICK';position:absolute;top:0;right:0;background:var(--low);color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;padding:4px 14px;border-bottom-left-radius:8px;}
+  .seller-rank{width:36px;height:36px;border-radius:10px;background:var(--warm1);display:grid;place-items:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--muted);}
+  .rank-1{background:rgba(193,127,62,.15);color:var(--accent);}
+  .rank-2{background:rgba(139,139,139,.1);color:#888;}
+  .rank-3{background:rgba(184,92,74,.08);color:var(--high);}
+  .seller-name-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .seller-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);}
+  .risk-badge{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+  .risk-low{background:rgba(124,158,107,.12);color:var(--low);border:1px solid rgba(124,158,107,.3);}
+  .risk-med{background:rgba(193,127,62,.12);color:var(--med);border:1px solid rgba(193,127,62,.3);}
+  .risk-high{background:rgba(184,92,74,.12);color:var(--high);border:1px solid rgba(184,92,74,.3);}
+  .earliest-tag{background:rgba(193,127,62,.1);color:var(--accent);border:1px solid rgba(193,127,62,.3);padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+  .seller-stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
+  .stat-item{font-size:13px;color:var(--muted);font-weight:500;}
+  .stat-item strong{color:var(--text);}
+  .explanation{font-size:13px;color:var(--muted);background:var(--warm2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-top:10px;line-height:1.6;}
+  .trust-col{display:flex;flex-direction:column;align-items:flex-end;gap:12px;min-width:130px;}
+  .trust-score-display{text-align:center;}
+  .score-circle{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-family:'Playfair Display',serif;font-size:19px;font-weight:700;border:3px solid;margin:0 auto 4px;}
+  .score-circle.low{border-color:var(--low);color:var(--low);box-shadow:0 0 16px rgba(124,158,107,.2);}
+  .score-circle.medium{border-color:var(--med);color:var(--med);}
+  .score-circle.high{border-color:var(--high);color:var(--high);}
+  .score-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+  .add-btn{background:linear-gradient(135deg,var(--accent),var(--clay));border:none;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .2s;width:100%;box-shadow:0 2px 8px rgba(193,127,62,.25);}
+  .add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(193,127,62,.35);}
+  .add-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+  .view-btn{background:transparent;border:1.5px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;color:var(--text);cursor:pointer;transition:border-color .2s;width:100%;font-family:'Nunito',sans-serif;font-weight:600;}
+  .view-btn:hover{border-color:var(--accent);}
+
+  /* CHARTS — only 2, side by side, with descriptions */
+  .charts-section{margin-top:40px;}
+  .charts-section-hdr{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:6px;color:var(--text);}
+  .charts-section-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6;}
+  .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .chart-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:22px;}
+  .chart-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text);}
+  .chart-desc{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+  .chart-wrapper{position:relative;height:220px;}
+
+  .toast{position:fixed;bottom:32px;right:32px;background:var(--low);color:#fff;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;box-shadow:0 4px 16px rgba(124,158,107,.4);}
+  .toast.show{transform:translateY(0);opacity:1;}
+
+  /* Report Issue button */
+  .report-btn{background:transparent;border:1px solid rgba(184,92,74,.3);border-radius:8px;padding:7px 14px;font-size:12px;color:var(--high);cursor:pointer;transition:border-color .2s,background .2s;font-family:'Nunito',sans-serif;font-weight:600;}
+  .report-btn:hover{border-color:var(--high);background:rgba(184,92,74,.06);}
+
+  /* Trend sparkline row */
+  .trend-row{margin-top:10px;display:flex;align-items:center;gap:10px;}
+  .sparkline-wrap{flex:1;height:34px;position:relative;}
+  .trend-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;}
+  .trend-delta{font-size:11px;font-weight:700;white-space:nowrap;}
+  .trend-up{color:var(--low);}
+  .trend-dn{color:var(--high);}
+  .trend-flat{color:var(--muted);}
+
+  /* Complaint modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(44,36,22,.55);backdrop-filter:blur(8px);z-index:999;display:none;place-items:center;}
+  .modal-overlay.show{display:grid;}
+  .modal-box{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:36px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(44,36,22,.15);}
+  .modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;margin-bottom:6px;color:var(--text);}
+  .modal-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6;}
+  .modal-field{margin-bottom:16px;}
+  .modal-field label{display:block;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+  .modal-field textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);background:var(--surface);resize:vertical;min-height:90px;transition:border-color .2s;}
+  .modal-field textarea:focus{outline:none;border-color:var(--accent);}
+  .modal-actions{display:flex;gap:12px;}
+  .modal-submit{flex:1;background:linear-gradient(135deg,var(--high),#c96b55);border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;color:#fff;cursor:pointer;box-shadow:0 4px 12px rgba(184,92,74,.3);}
+  .modal-cancel{flex:0 0 auto;background:transparent;border:1.5px solid var(--border);border-radius:10px;padding:13px 20px;font-size:14px;color:var(--muted);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:600;}
+  .modal-success{text-align:center;padding:20px 0;}
+  .modal-success .si{font-size:44px;margin-bottom:12px;}
+  .modal-success p{color:var(--muted);font-size:14px;line-height:1.6;}
+
+  @media(max-width:900px){
+    .product-hero{grid-template-columns:1fr;}
+    .charts-grid{grid-template-columns:1fr;}
+    .seller-card{grid-template-columns:auto 1fr;}
+    .trust-col{grid-column:1/-1;flex-direction:row;justify-content:space-between;}
+  }
+
+  .review-trust-lab{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:24px;margin:26px 0;box-shadow:0 4px 16px rgba(193,127,62,.06)}
+  .review-lab-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px}
+  .review-lab-sub{font-size:12px;color:var(--muted);line-height:1.5;max-width:720px}
+  .ai-badge{font-size:10px;font-weight:800;letter-spacing:.6px;padding:7px 10px;border-radius:999px;background:#f1ecff;color:#6741b8;border:1px solid #ddd1ff}
+  .review-form-grid{display:grid;grid-template-columns:1fr 150px 150px;gap:12px;margin-bottom:14px}
+  .form-label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:800;color:var(--muted);margin-bottom:6px}
+  .review-trust-lab select,.review-trust-lab input,.review-trust-lab textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;background:#fff;padding:10px 12px;color:var(--text);font:inherit;outline:none}
+  .review-trust-lab textarea{resize:vertical;line-height:1.5}
+  .review-trust-lab select:focus,.review-trust-lab input:focus,.review-trust-lab textarea:focus{border-color:var(--accent)}
+  .ai-review-btn{margin-top:12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--clay));color:#fff;padding:11px 16px;font-weight:800;cursor:pointer}
+  .ai-review-btn:disabled{opacity:.6;cursor:wait}
+  .review-result{margin-top:18px;border-top:1px solid var(--border);padding-top:18px}
+  .review-score-row{display:flex;align-items:center;gap:15px;margin-bottom:13px}
+  .review-risk{font-family:'Playfair Display',serif;font-size:27px;font-weight:900}
+  .review-summary{font-size:13px;color:var(--text);line-height:1.6;margin:10px 0}
+  .review-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+  .review-list{background:#faf7f2;border-radius:10px;padding:12px}
+  .review-list strong{font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  .review-list ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:12px;line-height:1.55}
+  @media(max-width:800px){.review-form-grid,.review-grid{grid-template-columns:1fr}.review-lab-head{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="marketplace.html"><div class="icon">🌿</div>Verdant</a>
+  <div class="nav-right">
+    <a class="back-btn" href="marketplace.html">← Back to Marketplace</a>
+    <a class="cart-btn" href="cart.html">🛒 Cart <span class="cart-count" id="cartCount">0</span></a>
+  </div>
+</nav>
+
+<div class="product-hero" id="productHero">
+  <div class="product-img-col">
+    <img id="productImg" class="product-img" alt="" style="display:none"/>
+    <div id="productImgPlaceholder" style="font-size:72px;position:relative;z-index:1;">📦</div>
+  </div>
+  <div class="product-info-col">
+    <div class="product-category" id="productCategory">Loading…</div>
+    <div class="product-title" id="productTitle">—</div>
+    <div class="product-desc" id="productDesc">—</div>
+    <div class="price-block" id="priceBlock">
+      <div>
+        <div class="price-main-label">Best Price</div>
+        <div class="price-main" id="productPrice">—</div>
+      </div>
+      <div class="price-divider"></div>
+      <div id="priceRangeInfo"></div>
+    </div>
+    <div class="seller-summary" id="sellerSummary"></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="help-box">
+    <div class="help-title">💡 How to read this page</div>
+    Each seller offering this product gets a <strong>Trust Score</strong> (shown as a circle %). Higher is safer. The score is based on customer ratings, complaint count, return rate, and listing history. Use the <strong>"Show only safe sellers"</strong> toggle to hide risky ones. The <strong>Top Pick</strong> badge marks the #1 recommended seller.
+  </div>
+
+  <div class="trust-filter">
+    <div>
+      <div class="toggle-label">Show only safe sellers</div>
+      <div class="toggle-sub">Hides sellers with a trust score below 70%</div>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="safeToggle" onchange="renderSellers()"/>
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+
+  <div class="section-hdr">🏪 Sellers Offering This Product</div>
+  <div class="sellers-list" id="sellersList">
+    <div style="color:var(--muted);padding:40px;text-align:center;">Analysing sellers…</div>
+  </div>
+
+
+  <div class="review-trust-lab" id="reviewTrustLab">
+    <div class="review-lab-head">
+      <div>
+        <div class="section-hdr" style="margin-bottom:4px">🤖 AI Review Trust Check</div>
+        <div class="review-lab-sub">A cautious AI signal for suspicious review patterns — not a verdict that a review is fake.</div>
+      </div>
+      <span class="ai-badge">GEMINI AI</span>
+    </div>
+    <div class="review-form-grid">
+      <div>
+        <label class="form-label">Seller</label>
+        <select id="reviewSellerSelect"></select>
+      </div>
+      <div>
+        <label class="form-label">Overall rating</label>
+        <input id="reviewRating" type="number" min="1" max="5" step="0.1" placeholder="e.g. 4.7" />
+      </div>
+      <div>
+        <label class="form-label">Review count</label>
+        <input id="reviewCount" type="number" min="1" placeholder="e.g. 128" />
+      </div>
+    </div>
+    <label class="form-label">Paste a batch of reviews</label>
+    <textarea id="reviewText" rows="7" placeholder="Paste 5–20 reviews here, separated by blank lines. More examples give the model more context."></textarea>
+    <button class="ai-review-btn" id="reviewAnalyzeBtn" onclick="analyzeReviews()">✨ Analyze review integrity</button>
+    <div id="reviewResult" class="review-result" style="display:none"></div>
+  </div>
+
+  <!-- Only 2 charts, both with clear descriptions -->
+  <div class="charts-section" id="chartsSection" style="display:none">
+    <div class="charts-section-hdr">📊 Seller Analytics</div>
+    <div class="charts-section-sub">These two charts help you quickly compare sellers at a glance — their overall trustworthiness and how their prices differ. Use them alongside the seller cards above to make a confident purchase.</div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Trust Score Comparison</div>
+        <div class="chart-desc">Each bar represents one seller's trust score (0–100%). Green = Safe (≥70%), Orange = Moderate (40–69%), Red = High Risk (&lt;40%). Taller bars mean safer sellers.</div>
+        <div class="chart-wrapper"><canvas id="trustChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Price Comparison by Seller</div>
+        <div class="chart-desc">Compare what each seller is charging for the same product. Large price differences between sellers may signal counterfeits or quality issues — cross-check with trust scores before choosing the cheapest option.</div>
+        <div class="chart-wrapper"><canvas id="priceChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ Added to cart!</div>
+
+<!-- Complaint Modal -->
+<div class="modal-overlay" id="complaintModal">
+  <div class="modal-box">
+    <div id="complaintForm">
+      <div class="modal-title">⚠️ Report an Issue</div>
+      <div class="modal-sub" id="complaintModalSub">Describe the problem with this seller. Your report helps keep the Verdant marketplace safe for everyone.</div>
+      <div class="modal-field">
+        <label>Your Name (optional)</label>
+        <textarea id="complaintName" style="min-height:44px;resize:none" placeholder="e.g. Priya S."></textarea>
+      </div>
+      <div class="modal-field">
+        <label>What happened?</label>
+        <textarea id="complaintDesc" placeholder="e.g. Received a counterfeit product, item was damaged, seller was unresponsive…"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeComplaintModal()">Cancel</button>
+        <button class="modal-submit" onclick="submitComplaint()">Submit Report</button>
+      </div>
+    </div>
+    <div class="modal-success" id="complaintSuccess" style="display:none">
+      <div class="si">✅</div>
+      <div class="modal-title" style="margin-bottom:8px">Report Filed</div>
+      <p>Thank you — your report has been recorded and will affect this seller's trust score in future calculations.</p>
+      <button class="modal-cancel" style="margin-top:18px;width:100%" onclick="closeComplaintModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:5000';
+const params=new URLSearchParams(location.search);
+const productId=params.get('id');
+let trustData=[];
+
+function updateCartCount(){document.getElementById('cartCount').textContent=JSON.parse(localStorage.getItem('tm_cart')||'[]').length;}
+updateCartCount();
+
+async function loadProduct(){
+  try{
+    const[prodRes,trustRes]=await Promise.all([fetch(`${API}/product/${productId}`),fetch(`${API}/trust-data/${productId}`)]);
+    const product=await prodRes.json();
+    const trust=await trustRes.json();
+    trustData=trust.sellers;
+    document.title=`Verdant — ${product.name}`;
+    document.getElementById('productCategory').textContent=product.category;
+    document.getElementById('productTitle').textContent=product.name;
+    document.getElementById('productDesc').textContent=product.description;
+    const imgEl=document.getElementById('productImg');
+    const phEl=document.getElementById('productImgPlaceholder');
+    const EMOJI_MAP={'Electronics':'📱','Footwear':'👟','Home Appliances':'🏠','Accessories':'🖱','Books':'📚','Sports':'⚽','Beauty':'✨','Kitchen':'🍳'};
+    phEl.textContent=EMOJI_MAP[product.category]||'📦';
+    if(product.image_url){
+      imgEl.onload=function(){imgEl.style.display='block';phEl.style.display='none';};
+      imgEl.onerror=function(){imgEl.style.display='none';phEl.style.display='block';};
+      imgEl.src=product.image_url;
+    }
+
+    const prices=trustData.map(s=>s.price);
+    const minPrice=Math.min(...prices);
+    const maxPrice=Math.max(...prices);
+    const spread=maxPrice-minPrice;
+    // Show lowest price
+    document.getElementById('productPrice').textContent=`₹${minPrice.toLocaleString('en-IN')}`;
+    // Price range info — only show spread if meaningful (>10% of min price)
+    const priceInfoEl=document.getElementById('priceRangeInfo');
+    if(prices.length>1 && spread > minPrice*0.1){
+      priceInfoEl.innerHTML=`
+        <div class="price-range-info">
+          <strong>Price range across ${prices.length} sellers</strong><br/>
+          ₹${minPrice.toLocaleString('en-IN')} — ₹${maxPrice.toLocaleString('en-IN')}
+        </div>
+        ${spread > minPrice*0.5 ? '<div class="price-note">⚠ Wide price gap — verify seller trust score before buying cheap</div>':''}
+      `;
+    } else if(prices.length>1){
+      priceInfoEl.innerHTML=`<div class="price-range-info"><strong>${prices.length} sellers</strong><br/>Prices are similar across sellers</div>`;
+    }
+
+    const recCount=trustData.filter(s=>s.recommended).length;
+    const avgRating=(trustData.reduce((a,s)=>a+s.rating,0)/trustData.length).toFixed(1);
+    document.getElementById('sellerSummary').innerHTML=`
+      <div class="summary-chip"><div class="chip-val">${trustData.length}</div><div class="chip-lbl">Sellers</div></div>
+      <div class="summary-chip"><div class="chip-val" style="color:var(--low)">${recCount}</div><div class="chip-lbl">Recommended</div></div>
+      <div class="summary-chip"><div class="chip-val" style="color:var(--gold)">★ ${avgRating}</div><div class="chip-lbl">Avg Rating</div></div>
+    `;
+    renderSellers();
+    populateReviewSellers();
+    buildCharts();
+    document.getElementById('chartsSection').style.display='block';
+  } catch(e){
+    document.getElementById('sellersList').innerHTML='<div style="color:var(--high);padding:40px;text-align:center;">⚠️ Could not load data. Ensure the Flask backend is running on port 5000.</div>';
+  }
+}
+
+function renderSellers(){
+  const safe=document.getElementById('safeToggle').checked;
+  // Deduplicate by seller_id before rendering (safety net)
+  const seen=new Set();
+  const unique=trustData.filter(s=>{if(seen.has(s.seller_id))return false;seen.add(s.seller_id);return true;});
+  const list=safe?unique.filter(s=>s.recommended):unique;
+  const el=document.getElementById('sellersList');
+  if(!list.length){el.innerHTML='<div style="color:var(--muted);padding:40px;text-align:center;">No sellers match this filter.</div>';return;}
+  el.innerHTML=list.map((s,i)=>`
+    <div class="seller-card ${s.is_best?'best':''}">
+      <div class="seller-rank rank-${i+1}">${i+1}</div>
+      <div class="seller-main">
+        <div class="seller-name-row">
+          <div class="seller-name">${s.seller_name}</div>
+          <span class="risk-badge risk-${s.risk_class}">${s.risk_level}</span>
+          ${s.is_earliest?'<span class="earliest-tag">🏷 Original Lister</span>':''}
+        </div>
+        <div class="seller-stats">
+          <div class="stat-item">📍 <strong>${s.location}</strong></div>
+          <div class="stat-item">⭐ Rating: <strong>${s.rating.toFixed(1)}</strong></div>
+          <div class="stat-item">↩ Return Rate: <strong>${(s.return_rate*100).toFixed(1)}%</strong></div>
+          <div class="stat-item">⚠ Complaints: <strong>${s.complaint_count}</strong></div>
+          <div class="stat-item">📦 In Stock: <strong>${s.stock}</strong></div>
+          <div class="stat-item">🛒 Total Sales: <strong>${s.total_sales?.toLocaleString('en-IN')}</strong></div>
+          <div class="stat-item">💰 Price: <strong style="color:var(--accent)">₹${s.price.toLocaleString('en-IN')}</strong></div>
+        </div>
+        <div class="explanation">💡 ${s.explanation}</div>
+        <div class="trend-row">
+          <span class="trend-label">6-mo trend</span>
+          <div class="sparkline-wrap"><canvas id="spark_${s.seller_id}" height="34"></canvas></div>
+          <span class="trend-delta" id="sparkdelta_${s.seller_id}"></span>
+        </div>
+      </div>
+      <div class="trust-col">
+        <div class="trust-score-display">
+          <div class="score-circle ${s.risk_class}">${(s.trust_score*100).toFixed(0)}<span style="font-size:11px">%</span></div>
+          <div class="score-label">Trust Score</div>
+        </div>
+        <button class="add-btn" onclick="addToCart(${JSON.stringify(s).replace(/"/g,'&quot;')},${productId})" ${s.stock===0?'disabled':''}>
+          ${s.stock===0?'Out of Stock':'+ Add to Cart'}
+        </button>
+        <button class="view-btn" onclick="viewSeller(${s.seller_id})">View Profile</button>
+        <button class="report-btn" onclick="openComplaintModal(${s.seller_id},'${s.seller_name.replace(/'/g,"\\'")}')">⚠ Report Issue</button>
+      </div>
+    </div>
+  `).join('');
+  loadSparklines(list);
+}
+
+function addToCart(seller,pid){
+  const cart=JSON.parse(localStorage.getItem('tm_cart')||'[]');
+  cart.push({product_id:pid,seller_id:seller.seller_id,seller_name:seller.seller_name,price:seller.price,trust_score:seller.trust_score,risk_level:seller.risk_level,product_name:document.getElementById('productTitle').textContent,product_img:document.getElementById('productImg').src});
+  localStorage.setItem('tm_cart',JSON.stringify(cart));
+  updateCartCount();
+  showToast('✅ Added to cart!');
+}
+function viewSeller(sid){window.location.href=`seller.html?id=${sid}&ref=${productId}`;}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ── Sparklines ────────────────────────────────────────────────────────────────
+async function loadSparklines(sellers){
+  for(const s of sellers){
+    try{
+      const res=await fetch(`${API}/trust-trend/${productId}/${s.seller_id}`);
+      const data=await res.json();
+      if(!data.trend)continue;
+      const canvas=document.getElementById('spark_'+s.seller_id);
+      if(!canvas)continue;
+      const pts=data.trend.map(t=>t.pct);
+      const first=pts[0], last=pts[pts.length-1];
+      const delta=last-first;
+      const deltaEl=document.getElementById('sparkdelta_'+s.seller_id);
+      if(deltaEl){
+        const sign=delta>0?'+':'';
+        const cls=delta>0.5?'trend-up':delta<-0.5?'trend-dn':'trend-flat';
+        deltaEl.className='trend-delta '+cls;
+        deltaEl.textContent=sign+delta.toFixed(1)+'%';
+      }
+      // Draw sparkline via Chart.js
+      const color=s.risk_class==='low'?'#7c9e6b':s.risk_class==='medium'?'#c17f3e':'#b85c4a';
+      new Chart(canvas,{
+        type:'line',
+        data:{
+          labels:data.trend.map(t=>t.month),
+          datasets:[{data:pts,borderColor:color,borderWidth:2,pointRadius:0,tension:.4,fill:true,
+            backgroundColor:s.risk_class==='low'?'rgba(124,158,107,.1)':s.risk_class==='medium'?'rgba(193,127,62,.1)':'rgba(184,92,74,.1)'}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,animation:false,
+          plugins:{legend:{display:false},tooltip:{enabled:false}},
+          scales:{x:{display:false},y:{display:false,min:Math.max(0,Math.min(...pts)-10),max:Math.min(100,Math.max(...pts)+10)}}}
+      });
+    }catch(e){}
+  }
+}
+
+// ── Complaint modal ───────────────────────────────────────────────────────────
+let _complaintSellerId=null;
+function openComplaintModal(sellerId,sellerName){
+  _complaintSellerId=sellerId;
+  document.getElementById('complaintModalSub').textContent=`Reporting an issue with seller "${sellerName}". Your report helps keep the Verdant marketplace safe.`;
+  document.getElementById('complaintForm').style.display='';
+  document.getElementById('complaintSuccess').style.display='none';
+  document.getElementById('complaintDesc').value='';
+  document.getElementById('complaintName').value='';
+  document.getElementById('complaintModal').classList.add('show');
+}
+function closeComplaintModal(){document.getElementById('complaintModal').classList.remove('show');}
+document.getElementById('complaintModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeComplaintModal();});
+
+async function submitComplaint(){
+  const desc=document.getElementById('complaintDesc').value.trim();
+  if(!desc){document.getElementById('complaintDesc').style.borderColor='var(--high)';return;}
+  document.getElementById('complaintDesc').style.borderColor='';
+  const name=document.getElementById('complaintName').value.trim()||'Guest';
+  try{
+    await fetch(`${API}/file-complaint`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({product_id:productId,seller_id:_complaintSellerId,customer_name:name,description:desc})});
+  }catch(e){}
+  document.getElementById('complaintForm').style.display='none';
+  document.getElementById('complaintSuccess').style.display='';
+}
+
+function buildCharts(){
+  const names=trustData.map(s=>s.seller_name);
+  const scores=trustData.map(s=>+(s.trust_score*100).toFixed(1));
+  const colors=trustData.map(s=>s.risk_class==='low'?'rgba(124,158,107,.8)':s.risk_class==='medium'?'rgba(193,127,62,.8)':'rgba(184,92,74,.8)');
+  Chart.defaults.color='#8a7a65';Chart.defaults.borderColor='#e2d8cc';
+
+  // Chart 1: Trust score bar chart
+  new Chart(document.getElementById('trustChart'),{
+    type:'bar',
+    data:{labels:names,datasets:[{label:'Trust Score (%)',data:scores,backgroundColor:colors,borderRadius:8,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`Trust: ${ctx.raw}%`}}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}}
+  });
+
+  // Chart 2: Price comparison — only show if there are meaningful price differences
+  const prices=trustData.map(s=>s.price);
+  new Chart(document.getElementById('priceChart'),{
+    type:'bar',
+    data:{labels:names,datasets:[{label:'Price (₹)',data:prices,backgroundColor:'rgba(193,127,62,.7)',borderRadius:8,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`₹${ctx.raw.toLocaleString('en-IN')}`}}},scales:{y:{ticks:{callback:v=>'₹'+v.toLocaleString('en-IN')}}}}
+  });
+}
+
+
+function populateReviewSellers(){
+  const sel=document.getElementById('reviewSellerSelect');
+  if(!sel || !Array.isArray(trustData)) return;
+  sel.innerHTML=trustData.map(s=>`<option value="${s.seller_id}" data-rating="${s.rating}">${s.seller_name} — ${s.rating.toFixed(1)}★</option>`).join('');
+  const first=trustData[0];
+  if(first){document.getElementById('reviewRating').value=first.rating.toFixed(1);}
+  sel.onchange=()=>{const s=trustData.find(x=>x.seller_id===parseInt(sel.value));if(s)document.getElementById('reviewRating').value=s.rating.toFixed(1);};
+}
+async function analyzeReviews(){
+  const sel=document.getElementById('reviewSellerSelect');
+  const seller=trustData.find(s=>s.seller_id===parseInt(sel.value));
+  const reviews=document.getElementById('reviewText').value.trim();
+  const rating=document.getElementById('reviewRating').value;
+  const reviewCount=document.getElementById('reviewCount').value;
+  const resultEl=document.getElementById('reviewResult');
+  const btn=document.getElementById('reviewAnalyzeBtn');
+  if(reviews.length<80){resultEl.style.display='block';resultEl.innerHTML='<div style="color:var(--high)">Paste a few reviews first — the AI needs enough text to compare patterns.</div>';return;}
+  btn.disabled=true;btn.textContent='⏳ Analyzing review patterns…';resultEl.style.display='block';resultEl.innerHTML='<div style="color:var(--muted)">Gemini is checking wording, repetition, rating consistency and suspicious signals.</div>';
+  try{
+    const productName=document.getElementById('productName')?.textContent?.trim()||'Product';
+    const r=await fetch(`${API}/review-trust-analysis`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_name:productName,seller_name:seller?.seller_name||'Unknown',rating,review_count:reviewCount,reviews})});
+    const d=await r.json();if(!r.ok)throw Error(d.error||'Analysis failed');
+    const a=d.analysis;const riskColor=a.authenticityRisk==='Low'?'var(--low)':a.authenticityRisk==='Medium'?'var(--med)':'var(--high)';
+    resultEl.innerHTML=`<div class="review-score-row"><div><div class="form-label">AUTHENTICITY RISK SIGNAL</div><div class="review-risk" style="color:${riskColor}">${a.authenticityRisk}</div></div><div><div class="form-label">MODEL CONFIDENCE</div><strong>${a.confidence}%</strong></div><div><div class="form-label">RATING CONSISTENCY</div><strong>${a.ratingConsistency}</strong></div></div><div class="review-summary">${a.summary}</div><div class="review-grid"><div class="review-list"><strong>⚠ Suspicious signals</strong><ul>${a.signals.map(x=>`<li>${x}</li>`).join('')||'<li>None identified</li>'}</ul></div><div class="review-list"><strong>✓ Positive signals</strong><ul>${a.positiveSignals.map(x=>`<li>${x}</li>`).join('')||'<li>None identified</li>'}</ul></div></div><div class="review-summary"><strong>Recommendation:</strong> ${a.recommendation}</div>`;
+  }catch(e){resultEl.innerHTML=`<div style="color:var(--high)">⚠ ${e.message}</div>`;}finally{btn.disabled=false;btn.textContent='✨ Analyze review integrity';}
+}
+
+loadProduct();
+</script>
+</body>
+</html>
