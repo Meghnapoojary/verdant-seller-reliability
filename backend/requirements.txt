@@ -1,6 +1,7 @@
 Flask==3.0.0
 Flask-CORS==4.0.0
 gunicorn==23.0.0
-mysql-connector-python==8.4.0
+PyMySQL
+cryptography
 python-dotenv==1.1.1
 google-genai==1.52.0

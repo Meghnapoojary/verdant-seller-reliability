@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import mysql.connector
+import pymysql
+from pymysql.cursors import DictCursor
 from dotenv import load_dotenv
 from google import genai
 from datetime import datetime, date
@@ -15,15 +16,24 @@ CORS(app)
 #  DB CONFIG  – update credentials as needed
 # ─────────────────────────────────────────────
 DB_CONFIG = {
-    "host":     os.getenv("DB_HOST", "localhost"),
-    "user":     os.getenv("DB_USER", "root"),
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": int(os.getenv("DB_PORT", "3306")),
+    "user": os.getenv("DB_USER", "root"),
     "password": os.getenv("DB_PASSWORD", ""),
-    "database": os.getenv("DB_NAME", "seller_trust_db")
+    "database": os.getenv("DB_NAME", "seller_trust_db"),
 }
 
-def get_db():
-    return mysql.connector.connect(**DB_CONFIG)
+if os.getenv("DB_SSL_CA"):
+    DB_CONFIG["ssl"] = {
+        "ca": os.getenv("DB_SSL_CA")
+    }
 
+def get_db():
+    return pymysql.connect(
+        **DB_CONFIG,
+        cursorclass=DictCursor,
+        autocommit=False
+    )
 def serial(v):
     """Make a value JSON-safe."""
     if isinstance(v, (datetime, date)):
@@ -109,7 +119,7 @@ def get_products():
     the seed SQL was run.
     """
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor() 
     cursor.execute("""
         SELECT
             MIN(p.product_id)           AS product_id,
@@ -145,7 +155,7 @@ def get_products():
 def get_product(product_id):
     """Return product details. Accepts any of the duplicate product_ids."""
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM products WHERE product_id = %s", (product_id,))
     row = cursor.fetchone()
     cursor.close()
@@ -171,7 +181,7 @@ def get_trust_data(product_id):
          so the price spread shown to buyers is never absurd.
     """
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     # 1. Product name
     cursor.execute("SELECT name, base_price FROM products WHERE product_id = %s", (product_id,))
@@ -303,7 +313,7 @@ def place_order():
 @app.route("/sellers", methods=["GET"])
 def get_sellers():
     db     = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM sellers ORDER BY total_sales DESC")
     rows = cursor.fetchall()
     cursor.close(); db.close()
@@ -394,7 +404,7 @@ REVIEWS:
 @app.route("/orders/<customer_name>", methods=["GET"])
 def get_orders(customer_name):
     db     = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("""
         SELECT o.order_id, o.product_id, o.seller_id, o.quantity,
                o.total_price, o.order_date,
@@ -442,7 +452,7 @@ def get_trust_trend(product_id, seller_id):
     a realistic trend without needing a separate history table.
     """
     db     = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     # Get current metrics
     cursor.execute("SELECT name FROM products WHERE product_id = %s", (product_id,))
