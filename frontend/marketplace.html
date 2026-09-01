@@ -103,6 +103,61 @@
 
   .empty-state{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--muted);}
   .empty-state .icon{font-size:48px;margin-bottom:16px;}
+
+/* ===== MOBILE RESPONSIVE ENHANCEMENTS ===== */
+html{width:100%;overflow-x:hidden;}
+img{max-width:100%;}
+@media (max-width: 900px){
+  nav{height:auto;min-height:64px;padding:12px 20px;gap:12px;flex-wrap:wrap;}
+  .nav-brand{font-size:20px;}
+  .nav-right{gap:8px;}
+  .nav-search{order:3;flex:1 0 100%;max-width:none;}
+  .hero{padding:32px 24px;align-items:flex-start;gap:24px;flex-direction:column;}
+  .hero h1{font-size:29px;}
+  .hero-stats{width:100%;justify-content:flex-start;gap:28px;}
+  .guide-toggle{padding:13px 20px;}
+  .guide-content{padding:0 20px 18px;}
+  .filters-bar{padding:10px 20px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .filter-chip{white-space:nowrap;flex-shrink:0;}
+  .sort-bar{padding:10px 20px;flex-wrap:wrap;}
+  .main-content{padding:24px 20px;}
+  .products-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+}
+@media (max-width: 600px){
+  nav{padding:10px 14px;}
+  .nav-brand{font-size:18px;gap:7px;}
+  .nav-brand .icon{width:30px;height:30px;font-size:15px;}
+  .nav-right{margin-left:auto;}
+  .user-badge{display:none;}
+  .cart-btn{padding:8px 11px;font-size:13px;}
+  .logout-btn{font-size:12px;padding:4px 5px;}
+  .nav-search input{padding:10px 12px 10px 36px;font-size:16px;}
+  .hero{padding:28px 16px;}
+  .hero h1{font-size:27px;}
+  .hero p{font-size:13px;line-height:1.5;}
+  .hero-stats{gap:20px;}
+  .stat-num{font-size:23px;}
+  .stat-lbl{font-size:9px;}
+  .guide-toggle{padding:12px 16px;font-size:13px;}
+  .guide-content{padding:0 16px 16px;}
+  .guide-grid{grid-template-columns:1fr;gap:10px;}
+  .guide-card{padding:13px 14px;}
+  .filters-bar{padding:9px 16px;}
+  .sort-bar{padding:9px 16px;}
+  .main-content{padding:20px 16px;}
+  .section-title{font-size:18px;margin-bottom:15px;}
+  .products-grid{grid-template-columns:1fr;gap:12px;}
+  .product-card{border-radius:14px;}
+  .card-img{height:190px;}
+  .score-legend{overflow-x:auto;white-space:nowrap;padding-bottom:4px;}
+}
+@media (max-width: 380px){
+  .nav-brand{font-size:17px;}
+  .cart-btn{padding:7px 9px;}
+  .hero-stats{gap:15px;}
+  .stat-num{font-size:21px;}
+}
+
 </style>
 </head>
 <body>

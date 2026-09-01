@@ -164,6 +164,68 @@
   .review-list strong{font-size:11px;text-transform:uppercase;letter-spacing:.5px}
   .review-list ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:12px;line-height:1.55}
   @media(max-width:800px){.review-form-grid,.review-grid{grid-template-columns:1fr}.review-lab-head{flex-direction:column}}
+
+/* ===== MOBILE RESPONSIVE ENHANCEMENTS ===== */
+html{width:100%;overflow-x:hidden;}
+img{max-width:100%;}
+@media (max-width: 900px){
+  nav{height:auto;min-height:64px;padding:12px 20px;flex-wrap:wrap;}
+  .nav-right{margin-left:auto;}
+  .product-hero{grid-template-columns:1fr;min-height:0;}
+  .product-img-col{min-height:270px;padding:28px;border-right:0;border-bottom:1px solid var(--border);}
+  .product-img{max-width:min(70vw,260px);max-height:240px;}
+  .product-info-col{padding:28px 24px;}
+  .product-title{font-size:27px;}
+  .main{padding:24px 20px;}
+  .review-trust-lab{padding:20px;}
+  .review-form-grid{grid-template-columns:1fr 1fr;}
+  .charts-grid{grid-template-columns:1fr;}
+  .seller-card{grid-template-columns:auto 1fr;}
+  .trust-col{grid-column:1/-1;flex-direction:row;justify-content:space-between;}
+}
+@media (max-width: 600px){
+  nav{padding:10px 14px;}
+  .nav-brand{font-size:18px;}
+  .nav-brand .icon{width:30px;height:30px;font-size:15px;}
+  .nav-right{gap:7px;}
+  .back-btn,.cart-btn{padding:7px 10px;font-size:12px;}
+  .product-img-col{min-height:220px;padding:20px;}
+  .product-img{max-width:62vw;max-height:200px;}
+  .product-info-col{padding:22px 16px;}
+  .product-category{font-size:10px;}
+  .product-title{font-size:24px;}
+  .product-desc{font-size:13px;line-height:1.65;margin-bottom:16px;}
+  .price-block{padding:12px 14px;gap:12px;margin-bottom:16px;}
+  .price-main{font-size:27px;}
+  .price-divider{display:none;}
+  .price-range-info{width:100%;font-size:12px;}
+  .seller-summary{gap:8px;}
+  .summary-chip{padding:9px 11px;flex:1 1 calc(50% - 8px);}
+  .chip-val{font-size:17px;}
+  .main{padding:20px 16px;}
+  .section-hdr{font-size:17px;}
+  .seller-card{padding:14px;gap:12px;}
+  .seller-main{min-width:0;}
+  .seller-name{font-size:14px;}
+  .seller-stats{flex-wrap:wrap;}
+  .trust-score-display{font-size:24px;}
+  .charts-section{margin-top:20px;}
+  .chart-card{padding:16px;}
+  .chart-wrapper{height:190px;}
+  .review-trust-lab{padding:16px;margin:20px 0;}
+  .review-lab-head{gap:12px;}
+  .review-form-grid{grid-template-columns:1fr;}
+  .review-grid{grid-template-columns:1fr;}
+  .toast{left:16px;right:16px;bottom:16px;text-align:center;}
+  .modal-box{width:calc(100vw - 32px);max-width:none;padding:20px;}
+}
+@media (max-width: 380px){
+  .nav-brand{font-size:17px;}
+  .back-btn{padding:7px 8px;}
+  .cart-btn{padding:7px 8px;}
+  .summary-chip{flex-basis:100%;}
+}
+
 </style>
 </head>
 <body>
